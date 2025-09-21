@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Happy Birthday, Sarah!</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Montserrat:wght@300;400&display=swap"
+    rel="stylesheet">
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+  <style>
+    /* All CSS styles are the same as before */
+    :root {
+      --bg-color: #0c0a1a;
+      --primary-text: #e0e0e0;
+      --accent-gold: #ffc978;
+      --accent-magenta: #f38181;
+      --font-heading: 'Playfair Display', serif;
+      --font-body: 'Montserrat', sans-serif;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--primary-text);
+      font-family: var(--font-body);
+      overflow-x: hidden;
+    }
+
+    @keyframes move-stars {
+      from {
+        background-position: 0 0;
+      }
+
+      to {
+        background-position: 0 10000px;
+      }
+    }
+
+    .star-background {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100vh;
+      z-index: -1;
+      background-image: url('https://www.transparenttextures.com/patterns/stardust.png'), url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/1231630/stars.png');
+      background-repeat: repeat, repeat;
+      animation: move-stars 200s linear infinite;
+    }
+
+    #loading-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: var(--bg-color);
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      transition: opacity 1s ease-out;
+    }
+
+    #loading-screen p {
+      color: var(--accent-gold);
+      font-size: 1.2rem;
+      margin-top: 20px;
+      animation: fadeIn 2s ease-in;
+    }
+
+    .loader {
+      border: 5px solid #1a163a;
+      border-top: 5px solid var(--accent-gold);
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      animation: spin 1.5s linear infinite;
+    }
+
+    @keyframes spin {
+      0% {
+        transform: rotate(0deg);
+      }
+
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+
+      to {
+        opacity: 1;
+      }
+    }
+
+    section {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 100px 5%;
+      position: relative;
+      text-align: center;
+    }
+
+    h1 {
+      font-family: var(--font-heading);
+      font-size: 5rem;
+      color: white;
+      text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5);
+    }
+
+    h2 {
+      font-family: var(--font-heading);
+      font-size: 3rem;
+      color: var(--accent-gold);
+      margin-bottom: 50px;
+    }
+
+    p {
+      font-size: 1.1rem;
+      line-height: 1.8;
+      max-width: 800px;
+    }
+
+    #hero {
+      justify-content: flex-end;
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+    }
+
+    #hero h1 {
+      margin-bottom: 20vh;
+    }
+
+    .scroll-down {
+      position: absolute;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: white;
+      font-size: 0.9rem;
+      letter-spacing: 2px;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% {
+        opacity: 0.5;
+      }
+
+      50% {
+        opacity: 1;
+      }
+
+      100% {
+        opacity: 0.5;
+      }
+    }
+
+    .timeline-container {
+      width: 100%;
+      position: relative;
+    }
+
+    .timeline-event {
+      display: flex;
+      align-items: center;
+      margin: 80px 0;
+      width: 40%;
+      position: relative;
+    }
+
+    .timeline-event:nth-child(even) {
+      margin-left: 60%;
+      flex-direction: row-reverse;
+    }
+
+    .timeline-dot {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background-size: cover;
+      background-position: center;
+      border: 3px solid var(--accent-gold);
+      cursor: pointer;
+      transition: transform 0.3s, box-shadow 0.3s;
+      flex-shrink: 0;
+    }
+
+    .timeline-dot:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 25px var(--accent-gold);
+    }
+
+    .timeline-content {
+      padding: 0 30px;
+    }
+
+    .timeline-content h3 {
+      color: var(--accent-magenta);
+      font-family: var(--font-heading);
+      font-size: 1.8rem;
+    }
+
+    .timeline-path {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 4px;
+      height: 100%;
+      background-image: linear-gradient(to bottom, var(--accent-gold), var(--accent-magenta));
+      border-radius: 2px;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 100;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0, 0, 0, 0.9);
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-content {
+      display: block;
+      margin: auto;
+      max-width: 80%;
+      max-height: 80%;
+    }
+
+    .modal-caption {
+      margin: 20px auto;
+      display: block;
+      width: 80%;
+      text-align: center;
+      color: #ccc;
+      padding: 10px 0;
+    }
+
+    .close {
+      position: absolute;
+      top: 25px;
+      right: 45px;
+      color: #f1f1f1;
+      font-size: 40px;
+      font-weight: bold;
+      transition: 0.3s;
+      cursor: pointer;
+    }
+
+    .galaxy-grid {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 30px;
+    }
+
+    .reason-card {
+      width: 250px;
+      height: 250px;
+      perspective: 1000px;
+      cursor: pointer;
+    }
+
+    .card-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      transition: transform 0.8s;
+      transform-style: preserve-3d;
+    }
+
+    .reason-card.is-flipped .card-inner {
+      transform: rotateY(180deg);
+    }
+
+    .card-face {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      border-radius: 15px;
+      padding: 20px;
+      border: 2px solid var(--accent-gold);
+      background-color: rgba(255, 201, 120, 0.1);
+    }
+
+    .card-face--front h3 {
+      font-family: var(--font-heading);
+      font-size: 1.8rem;
+      color: var(--primary-text);
+    }
+
+    .card-face--back {
+      transform: rotateY(180deg);
+      background-color: rgba(243, 129, 129, 0.2);
+      border-color: var(--accent-magenta);
+    }
+
+    .mosaic-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      grid-auto-rows: 200px;
+      grid-auto-flow: dense;
+      gap: 10px;
+      width: 100%;
+    }
+
+    .mosaic-item {
+      overflow: hidden;
+      border-radius: 10px;
+    }
+
+    .mosaic-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.4s ease-out;
+    }
+
+    .mosaic-item:hover img {
+      transform: scale(1.1);
+    }
+
+    .wide {
+      grid-column: span 2;
+    }
+
+    .tall {
+      grid-row: span 2;
+    }
+
+    .video-container {
+      width: 100%;
+      max-width: 960px;
+      aspect-ratio: 16 / 9;
+      margin-top: 30px;
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 0 40px var(--accent-magenta);
+    }
+
+    #footer {
+      min-height: 50vh;
+    }
+
+    #footer p {
+      font-size: 1.5rem;
+      color: var(--accent-gold);
+    }
+
+    @media (max-width: 768px) {
+      h1 {
+        font-size: 3rem;
+      }
+
+      h2 {
+        font-size: 2.2rem;
+      }
+
+      .timeline-path {
+        display: none;
+      }
+
+      .timeline-event,
+      .timeline-event:nth-child(even) {
+        width: 100%;
+        margin: 40px 0;
+        margin-left: 0;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div id="loading-screen">
+    <div class="loader"></div>
+    <p>SURPRISE AAYILLEE MOLUUUU</p>
+  </div>
+
+  <div class="star-background"></div>
+
+  <main id="main-content" style="visibility: hidden;">
+
+    <section id="hero"
+      style="background-image: linear-gradient(to top, var(--bg-color) 5%, transparent 50%), url('images/hero-background.jpg');">
+      <h1>HAPPY BIRTHDAY ASIMOLEEE.</h1>
+      <div class="scroll-down">Scroll to Begin Our Journey &darr;</div>
+    </section>
+
+    <section id="timeline">
+      <h2>CHILA ORMAPPEDUTHALUKAL</h2>
+      <div class="timeline-container">
+        <div class="timeline-path"></div>
+
+        <div class="timeline-event" data-aos="fade-right">
+          <div class="timeline-dot" style="background-image: url('images/cuteone.jpg')"
+            onclick="openModal('modal1', 'images/cuteone.jpg', 'Sathyathil ee photoyum aa day yum thammil yaaadhoru bandham illya aavashyamulla tymil photo kittola athaan')">
+          </div>
+          <div class="timeline-content">
+            <h3>The Day We Met</h3>
+            <p>Little did I know this day would change my world forever.</p>
+          </div>
+        </div>
+
+        <div class="timeline-event" data-aos="fade-left">
+          <div class="timeline-dot" style="background-image: url('images/first-trip.jpg')"
+            onclick="openModal('modal2', 'images/first-trip.jpg', 'Ith sathyamaya pic aan enn vishwasikkunnu first trip kottayam')">
+          </div>
+          <div class="timeline-content">
+            <h3>Our First Trip</h3>
+            <p>Exploring new places with you is my favorite adventure.</p>
+          </div>
+        </div>
+
+        <div class="timeline-event" data-aos="fade-right">
+          <div class="timeline-dot" style="background-image: url('images/special-moment.jpg')"
+            onclick="openModal('modal3', 'images/special-moment.jpg', 'Nee ente koode ulla eeth samayavum enikk speacial moment aan ath engane nd hee????')">
+          </div>
+          <div class="timeline-content">
+            <h3>A Special Moment</h3>
+            <p>Just a simple day, but one I'll never forget.</p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <div id="modal1" class="modal"><span class="close" onclick="closeModal('modal1')">&times;</span><img
+        class="modal-content">
+      <div class="modal-caption"></div>
+    </div>
+    <div id="modal2" class="modal"><span class="close" onclick="closeModal('modal2')">&times;</span><img
+        class="modal-content">
+      <div class="modal-caption"></div>
+    </div>
+    <div id="modal3" class="modal"><span class="close" onclick="closeModal('modal3')">&times;</span><img
+        class="modal-content">
+      <div class="modal-caption"></div>
+    </div>
+
+    <section id="galaxy">
+      <h2>A Few Reasons Why I Love You</h2>
+      <div class="galaxy-grid">
+        <div class="reason-card" data-aos="zoom-in-up">
+          <div class="card-inner">
+            <div class="card-face card-face--front">
+              <h3>Ante Budhi</h3>
+            </div>
+            <div class="card-face card-face--back">
+              <p>Aparamaya Padikkanulla kazhiv athan enikk antedth nn kooduthal ishttaya keryam... IAS kari aakandeee...
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="reason-card" data-aos="zoom-in-up" data-aos-delay="100">
+          <div class="card-inner">
+            <div class="card-face card-face--front">
+              <h3>Sheriyakkam</h3>
+            </div>
+            <div class="card-face card-face--back">
+              <p>Enth prashnam paranjalum nee shariyakki tharum aa manass athaan main</p>
+            </div>
+          </div>
+        </div>
+        <div class="reason-card" data-aos="zoom-in-up" data-aos-delay="200">
+          <div class="card-inner">
+            <div class="card-face card-face--front">
+              <h3>The Way You Laugh</h3>
+            </div>
+            <div class="card-face card-face--back">
+              <p>Ante chiri oru main aan enikk bayankara ishhttan anne chirippikkan athukondaan anne njn edakk kikkili
+                aakkkunne hihihi...</p>
+            </div>
+          </div>
+        </div>
+        <div class="reason-card" data-aos="zoom-in-up" data-aos-delay="300">
+          <div class="card-inner">
+            <div class="card-face card-face--front">
+              <h3>Our Adventures</h3>
+            </div>
+            <div class="card-face card-face--back">
+              <p>Ninte koode cheythathil vech eettavum greatest aaya adventures ottakk kittumbol parayam</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="mosaic">
+      <h2>A Supernova of Memories</h2>
+      <div class="mosaic-grid">
+        <div class="mosaic-item tall" data-aos="fade-up"><img src="images/bday.jpg" alt="Memory 1"></div>
+        <div class="mosaic-item" data-aos="fade-up"><img src="images/cuteone.jpg" alt="Memory 2"></div>
+        <div class="mosaic-item wide" data-aos="fade-up"><img src="images/sleep.jpg" alt="Memory 3"></div>
+        <div class="mosaic-item" data-aos="fade-up"><img src="images/food.jpg" alt="Memory 4"></div>
+        <div class="mosaic-item" data-aos="fade-up"><img src="images/speacial.jpg" alt="Memory 5"></div>
+        <div class="mosaic-item wide" data-aos="fade-up"><img src="images/videocall.jpg" alt="Memory 6"></div>
+        <div class="mosaic-item" data-aos="fade-up"><img src="images/natural.jpg" alt="Memory 7"></div>
+      </div>
+    </section>
+
+    <section id="finale">
+      <h2>One Last Message, From My Heart</h2>
+      <div class="video-container" data-aos="zoom-in">
+        <video width="100%" height="100%" controls autoplay loop muted>
+          <source src="images/bdyvideo.mp4" type="video/mp4">
+          Your browser does not support the video tag.
+        </video>
+      </div>
+    </section>
+
+    <section id="footer">
+      <h2 data-aos="zoom-in">Happy Birthday, Asin Alice Rasamalla.</h2>
+      <p data-aos="fade-up" data-aos-delay="200">My universe is better with you in it.<br>With all my love,<br>Aflu</p>
+    </section>
+  </main>
+
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
+  <script>
+    // --- Loading Screen Logic ---
+    window.addEventListener('load', () => {
+      const loadingScreen = document.getElementById('loading-screen');
+      const mainContent = document.getElementById('main-content');
+
+      setTimeout(() => {
+        loadingScreen.style.opacity = '0';
+        mainContent.style.visibility = 'visible';
+        mainContent.style.animation = 'fadeIn 1s ease-in';
+      }, 2000);
+
+      setTimeout(() => {
+        loadingScreen.style.display = 'none';
+      }, 3000);
+    });
+
+    // --- Initialize AOS (Animate on Scroll) ---
+    AOS.init({
+      duration: 1000,
+      once: true,
+    });
+
+    // --- Timeline Modal Logic ---
+    function openModal(modalId, imgSrc, captionText) {
+      const modal = document.getElementById(modalId);
+      const modalImg = modal.querySelector('.modal-content');
+      const caption = modal.querySelector('.modal-caption');
+
+      modal.style.display = "flex";
+      modalImg.src = imgSrc;
+      caption.innerHTML = captionText;
+    }
+
+    function closeModal(modalId) {
+      document.getElementById(modalId).style.display = "none";
+    }
+
+    // --- Galaxy Card Flip Logic ---
+    const cards = document.querySelectorAll('.reason-card');
+    cards.forEach(card => {
+      card.addEventListener('click', () => {
+        card.classList.toggle('is-flipped');
+      });
+    });
+  </script>
+</body>
+
+</html>
